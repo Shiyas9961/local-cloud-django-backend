@@ -1,0 +1,55 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: postgres
+    environment:
+      POSTGRES_USER: shiyas
+      POSTGRES_PASSWORD: shiyas123
+      POSTGRES_DB: local_cloud
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"   # AMQP
+      - "15672:15672" # Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: shiyas
+      RABBITMQ_DEFAULT_PASS: shiyas123
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+  localstack:
+    image: localstack/localstack:latest
+    container_name: localstack
+    ports:
+      - "4566:4566" # LocalStack edge service
+    environment:
+      - DEFAULT_REGION=ap-southeast-1
+      - AWS_ACCESS_KEY_ID=shiyas
+      - AWS_SECRET_ACCESS_KEY=shiyas123
+      - SERVICES=s3,logs,sqs,cloudwatch,ses
+      - PERSISTENCE=1
+      - DATA_DIR=/var/lib/localstack/state
+    volumes:
+      - localstack_data:/var/lib/localstack/state
+      - "/var/run/docker.sock:/var/run/docker.sock"
+
+volumes:
+  postgres_data:
+  localstack_data:
+  redis_data:
+  rabbitmq_data:
