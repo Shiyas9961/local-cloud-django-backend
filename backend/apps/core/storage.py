@@ -1,12 +1,19 @@
+"""Core application storage."""
+
 from storages.backends.s3boto3 import S3Boto3Storage
 
+
 class PublicMediaStorage(S3Boto3Storage):
+    """Public media storage."""
+
     location = "media"
     default_acl = "public-read"
     file_overwrite = False
 
 
 class PrivateMediaStorage(S3Boto3Storage):
+    """Private media storage."""
+
     location = "private"
     default_acl = "private"
     file_overwrite = False
@@ -14,6 +21,8 @@ class PrivateMediaStorage(S3Boto3Storage):
 
 
 class StaticMediaStorage(S3Boto3Storage):
+    """Static media storage."""
+
     location = "static"
     default_acl = "public-read"
     file_overwrite = True

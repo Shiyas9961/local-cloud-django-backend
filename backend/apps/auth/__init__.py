@@ -1,0 +1,1 @@
+"""Auth application entry point."""

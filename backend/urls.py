@@ -14,8 +14,9 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import include, path
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularRedocView,
@@ -23,14 +24,22 @@ from drf_spectacular.views import (
 )
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/', include('backend.apps.products.urls')),
-    path('api/', include('backend.apps.users.urls')),
-    path('api/', include('backend.apps.auth.urls')),
+    path("admin/", admin.site.urls),
+    path("api/", include("backend.apps.products.urls")),
+    path("api/", include("backend.apps.users.urls")),
+    path("api/", include("backend.apps.auth.urls")),
 ]
 
 urlpatterns += [
-    path('api/schema', SpectacularAPIView.as_view(), name='schema'),
-    path('api/docs/swagger', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-    path('api/docs/redoc', SpectacularRedocView.as_view(url_name='schema'), name='redoc-ui'),
+    path("api/schema", SpectacularAPIView.as_view(), name="schema"),
+    path(
+        "api/docs/swagger",
+        SpectacularSwaggerView.as_view(url_name="schema"),
+        name="swagger-ui",
+    ),
+    path(
+        "api/docs/redoc",
+        SpectacularRedocView.as_view(url_name="schema"),
+        name="redoc-ui",
+    ),
 ]

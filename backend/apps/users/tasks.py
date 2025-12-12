@@ -1,9 +1,9 @@
 import os
 import time
 
-from backend.celery import app
 from backend.apps.core.utils.s3 import upload_and_get_url
 from backend.apps.users.models import User
+from backend.celery import app
 
 
 @app.task(queue="default")
@@ -26,7 +26,7 @@ def upload_user_avatar_task(user_id, file_name, file_bytes):
     image_url = upload_and_get_url(
         file_bytes=file_bytes,
         folder_name="avatars",  # folder for user avatars
-        final_filename=final_filename
+        final_filename=final_filename,
     )
 
     # Update DB

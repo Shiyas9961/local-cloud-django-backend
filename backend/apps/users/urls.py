@@ -1,4 +1,5 @@
 """Product urls."""
+
 from rest_framework import routers
 
 from backend.apps.users.views import UserViewSet

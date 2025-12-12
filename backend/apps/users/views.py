@@ -1,6 +1,8 @@
-from rest_framework import viewsets, permissions, mixins
-from .serializers import UserSerializer
+from rest_framework import mixins, permissions, viewsets
+
 from .models import User
+from .serializers import UserSerializer
+
 
 class UserViewSet(
     viewsets.GenericViewSet,
@@ -12,6 +14,5 @@ class UserViewSet(
 ):
     queryset = User.objects.all().order_by("-date_joined")
     serializer_class = UserSerializer
-    permission_classes = [permissions.AllowAny]  # change for update/list as needed
+    permission_classes = [permissions.AllowAny]
     lookup_field = "id"
-    # you might want to override get_permissions to restrict list/update/delete to admins/self.

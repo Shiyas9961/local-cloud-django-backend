@@ -81,7 +81,7 @@ Thumbs.db
 # Docker
 # ===========================
 docker-compose.override.yml
-*~ 
+*~
 *.pid
 *.seed
 *.pid.lock
@@ -99,4 +99,3 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-

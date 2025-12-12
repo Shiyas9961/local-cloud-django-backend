@@ -1,15 +1,24 @@
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
+"""S3 utils."""
+
 import os
 import time
 
-def upload_and_get_url(file_bytes, folder_name="media", file_name=None, final_filename=None):
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
+
+
+def upload_and_get_url(
+    file_bytes, folder_name="media", file_name=None, final_filename=None
+):
     """
     Saves file_bytes to default_storage and returns the public URL.
 
     - If final_filename is provided, it's used as-is (no extra timestamping).
-      final_filename should include the extension (e.g. "product_1_1610000000.png").
-    - If final_filename is not provided, we will generate one using file_name and a timestamp.
+    final_filename should include the extension
+    (e.g. "product_1_1610000000.png").
+
+    - If final_filename is not provided, we will generate one using file_name
+    and a timestamp.
 
     Accepts any file type.
     """
@@ -36,4 +45,3 @@ def upload_and_get_url(file_bytes, folder_name="media", file_name=None, final_fi
 
     # Return public URL
     return default_storage.url(saved_path)
-

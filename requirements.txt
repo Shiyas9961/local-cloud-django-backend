@@ -2,13 +2,15 @@ Django==5.2.8
 python-dotenv==1.2.1
 celery==5.5.3
 redis==7.1.0
-psycopg==3.2.12
 djangorestframework==3.16.1
 drf-spectacular==0.29.0
 drf-spectacular-sidecar==2025.10.1
 minio==7.2.18
 boto3==1.41.2
 watchtower==3.4.0
-rest-framework-simplejwt==5.5.1
+djangorestframework-simplejwt==5.5.1
 django-filter==25.2
 django-ses==4.4.0
+django-storages==1.14.6
+psycopg2-binary==2.9.11
+gunicorn==23.0.0
