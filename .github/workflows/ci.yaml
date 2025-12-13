@@ -1,0 +1,124 @@
+name: Dajngo CI
+
+on:
+    push:
+        branches: [ main, develop ]
+    pull_request:
+        branches: [ main, develop ]
+
+jobs:
+    test:
+        name: Lint & Test
+        runs-on: ubuntu-latest
+
+        services:
+            postgres:
+                image: postgres:16-alpine
+                env:
+                    POSTGRES_DB: local_cloud
+                    POSTGRES_USER: shiyas
+                    POSTGRES_PASSWORD: shiyas123
+                ports:
+                    - 5432:5432
+                options: >-
+                    --health-cmd="pg_isreadey -U shiyas"
+                    --health-interval=10s
+                    --health-timeout=5s
+                    --health-retries=5
+
+            redis:
+                image: redis:7-alpine
+                ports:
+                    - 6379:6379
+
+            rabbitmq:
+                image: rabbitmq:3.12-management
+                ports:
+                    - 5672:5672
+                    - 15672:15672
+                env:
+                    RABBITMQ_DEFAULT_USER: shiyas
+                    RABBITMQ_DEFAULT_PASS: shiyas123
+
+            localstack:
+                image: localstack/localstack:latest
+                ports:
+                    - 4566:4566
+                env:
+                    SERVICES: s3,ses,logs,cloudwatch,sqs
+                    DEFAULT_REGION: us-east-1
+                    AWS_ACCESS_KEY_ID: shiyas
+                    AWS_SECRET_ACCESS_KEY: shiyas123
+                    options: >-
+                        --health-cmd="curl -f http://localhost:4566/_localstack/health || exit 1"
+                        --health-interval=10s
+                        --health-timeout=5s
+                        --health-retries=5"
+
+        env:
+            DJANGO_SETTINGS_MODULE: backend.settings
+            SECRET_KEY: test-secret
+            DEBUG: "True"
+
+            POSTGRES_DB: local_cloud
+            POSTGRES_USER: shiyas
+            POSTGRES_PASSWORD: shiyas123
+            POSTGRES_HOST: localhost
+            POSTGRES_PORT: 5432
+
+            CELERY_BROKER_URL: amqp://shiyas:shiyas123@localhost:5672//
+            CELERY_RESULT_BACKEND: redis://localhost:6379/0
+
+            AWS_ACCESS_KEY_ID: shiyas
+            AWS_SECRET_ACCESS_KEY: shiyas123
+            AWS_REGION_NAME: us-east-1
+            AWS_ENDPOINT_URL: http://localhost:4566
+            AWS_S3_BUCKET_NAME: test-bucket
+            USE_S3: "FALSE"
+
+            ADMIN_EMAIL: test@email.com
+            CLOUD_WATCH_ENABLED: "FALSE"
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup Python
+              uses: actions/setup-python@v5
+              with:
+                python-version: "3.13"
+
+            - name: Install dependencies
+              run: |
+                sudo apt-get update
+                sudo apt-get install -y \
+                gcc \
+                libpq-dev \
+                curl
+
+            - name: Install Python dependencies
+              run: |
+                python -m pip install --upgrade pip
+                pip install -r requirements.txt
+                pip install \
+                    pytest \
+                    pytest-django \
+                    pytest-mock \
+                    factory-boy \
+                    pre-commit
+
+            - name: Run pre-commit checks
+              run: |
+                pre-commit run --all-files
+
+            - name: Wait for services
+              run: |
+                sleep 15
+
+            - name: Run migrations
+              run: |
+                python manage.py migrate
+
+            - name: Run tests
+              run: |
+                pytest --disable-warnings --maxfail=1
