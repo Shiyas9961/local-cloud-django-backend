@@ -21,7 +21,7 @@ jobs:
                 ports:
                     - 5432:5432
                 options: >-
-                    --health-cmd="pg_isreadey -U shiyas"
+                    --health-cmd="pg_isready -U shiyas -d local_cloud"
                     --health-interval=10s
                     --health-timeout=5s
                     --health-retries=5
@@ -77,6 +77,10 @@ jobs:
             USE_S3: "FALSE"
 
             ADMIN_EMAIL: test@email.com
+
+            AWS_CLOUDWATCH_LOG_GROUP: django-local-logs
+            AWS_CLOUDWATCH_STREAM_NAME: django-local-stream
+            CLOUD_WATCH_LOG_LEVEL: INFO
             CLOUD_WATCH_ENABLED: "FALSE"
 
         steps:
