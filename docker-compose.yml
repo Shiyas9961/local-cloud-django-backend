@@ -1,29 +1,29 @@
 services:
-  web:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: local-cloud-web:latest
-    restart: unless-stopped
-    env_file: .env
-    depends_on:
-      - db
-      - redis
-      - rabbitmq
-      - localstack
-    ports:
-      - "8000:8000"
-    volumes:
-      - static_volume:/app/staticfiles
-      - media_volume:/app/media
-    command: ["/app/docker-entrypoint.sh", "gunicorn", "backend.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3", "--log-level", "info"]
-    healthcheck:
-      test: ["CMD-SHELL", "python manage.py check --deploy || exit 0"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+  # web:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   image: local-cloud-web:latest
+  #   restart: unless-stopped
+  #   env_file: .env
+  #   depends_on:
+  #     - db
+  #     - redis
+  #     - rabbitmq
+  #     - localstack
+  #   ports:
+  #     - "8000:8000"
+  #   volumes:
+  #     - static_volume:/app/staticfiles
+  #     - media_volume:/app/media
+  #   command: ["/app/docker-entrypoint.sh", "gunicorn", "backend.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3", "--log-level", "info"]
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "python manage.py check --deploy || exit 0"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 5
   db:
-    image: postgres:16-alpine
+    image: postgres:17-alpine
     container_name: postgres
     environment:
       POSTGRES_USER: shiyas
@@ -76,5 +76,5 @@ volumes:
   localstack_data:
   redis_data:
   rabbitmq_data:
-  static_volume:
-  media_volume:
+  # static_volume:
+  # media_volume:
